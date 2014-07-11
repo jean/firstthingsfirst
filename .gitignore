@@ -1,7 +1,15 @@
 logs/*
 !.gitkeep
-node_modules/
-bower_components/
 tmp
 .DS_Store
 .idea
+*.sublime-workspace
+.bower.json
+
+/bower_components/
+/node_modules/
+
+/app/bower_components/bootstrap/*
+!/app/bower_components/bootstrap/dist
+/app/bower_components/jquery/*
+!/app/bower_components/jquery/dist
