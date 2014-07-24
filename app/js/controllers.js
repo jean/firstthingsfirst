@@ -3,8 +3,10 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-  .controller('MyCtrl1', ['$scope', function($scope) {
+  .controller('MatrixController', ['$scope', function($scope) {
+  	$scope.init = function() {
 
+  	}
   }])
   .controller('MyCtrl2', ['$scope', function($scope) {
 
