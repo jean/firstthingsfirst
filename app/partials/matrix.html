@@ -5,11 +5,21 @@
     <div class="col-md-6">
       <div class="quadrant bg-danger">
         <div class="list-header"><h2 class="list-header-name">Urgent &amp; important</h2></div>
+        <ul>
+          <li class="card" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'-due'">
+            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="col-md-6">
       <div class="quadrant bg-info">
         <div class="list-header"><h2 class="list-header-name">Important</h2></div>
+        <ul>
+          <li class="card" ng-repeat="card in cards | filter:importantFilter | orderBy:'-due'">
+            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -17,11 +27,21 @@
     <div class="col-md-6">
       <div class="quadrant bg-warning">
         <div class="list-header"><h2 class="list-header-name">Urgent</h2></div>
+        <ul>
+          <li class="card" ng-repeat="card in cards | filter:urgentFilter | orderBy:'-due'">
+            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="col-md-6">
       <div class="quadrant bg-success">
         <div class="list-header"><h2 class="list-header-name">Not Urgent &amp; not important</h2></div>
+        <ul>
+          <li class="card" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'-due'">
+            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

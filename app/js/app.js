@@ -11,6 +11,6 @@ angular.module('myApp', [
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/matrix', {templateUrl: 'partials/matrix.html', controller: 'MatrixController'});
-  $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
+  $routeProvider.when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'});
   $routeProvider.otherwise({redirectTo: '/matrix'});
 }]);
