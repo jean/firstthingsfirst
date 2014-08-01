@@ -7,6 +7,16 @@ angular.module('myApp.controllers', [])
 
 	}])
 	.controller('NavbarController', ['$scope', 'AuthService', function($scope, AuthService) {
-		$scope.xxx = AuthService.user.test;
+
+		// Initialize with current status
+		$scope.authorized = AuthService.user.authorized;
+
+		$scope.$on('authorized', function(e, args) {
+			$scope.authorized = true;
+		});
+
+		$scope.$on('deauthorized', function(e, args) {
+			$scope.authorized = false;
+		});
 	}])
 ;

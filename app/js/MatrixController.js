@@ -4,7 +4,12 @@
  *
  *
  */
-angular.module('myApp.controllers').controller('MatrixController', ['$scope', function($scope) {
+angular.module('myApp.controllers').controller('MatrixController', ['$scope', 'AuthService', function($scope, AuthService) {
+
+	// Register this controller on AuthService.authorized
+	$scope.$on('authorized', function(e, args) {
+		// Start retrieving data
+	});
 
 	$scope.user = {
 		name: '-',
@@ -74,14 +79,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', fu
 	    });
 	};
 
-	$scope.onDeauthorize = function() {
-		$scope.$apply(function() {
-			$scope.user.authenticated = false;
-			$scope.user.name = "-";
-			$scope.cards = [];
-		});
-	};
-
 	$scope.cardIsImportant = function(item) {
 		return (item.labels.length > 0)
 			&& item.labels.some(function(i) { return i == $scope.settings.selectedLabel });
@@ -148,15 +145,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', fu
 	    scope: { write: true, read: true }
 	});
 	*/
-
-	$("#trelloAuthorize").click(function() {
-	    Trello.authorize({
-	        type: "popup",
-	        success: $scope.onAuthorize,
-	        scope: { write: true, read: true },
-	        name: "First things first",
-	    })
-	});
 
 	$("#trelloLogout").click(function() {
 		Trello.deauthorize();
