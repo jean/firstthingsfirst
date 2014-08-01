@@ -5,6 +5,32 @@
  *
  */
 angular.module('myApp.controllers').controller('MatrixController', ['$scope', function($scope) {
+
+	$scope.user = {
+		name: '-',
+		authenticated: false,
+	};
+
+	$scope.status = {
+		msg: '',
+	}
+
+	$scope.cards = [];
+
+	$scope.settings = {
+		labels: ['green','yellow','orange','red','purple','blue'],
+		selectedLabel: "red",
+		urgentDate: new Date(),
+		selectedBoard: "allAssigned",
+		boards: [
+	        { id: "allAssigned", name: "All cards assigned to me", },
+	        { id: "allVisible", name: "All cards visible to me", },
+		    { id: "abc", name: "ABC", },
+		    { id: "def", name: "DEF", },
+		    { id: "geh", name: "GEH", },
+        ],
+	};
+
   	$scope.init = function() {
 
   	}
@@ -54,31 +80,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', fu
 			$scope.user.name = "-";
 			$scope.cards = [];
 		});
-	};
-
-	$scope.user = {
-		name: '-',
-		authenticated: false,
-	};
-
-	$scope.status = {
-		msg: '',
-	}
-
-	$scope.cards = [];
-
-	$scope.settings = {
-		labels: ['green','yellow','orange','red','purple','blue'],
-		selectedLabel: "red",
-		urgentDate: new Date(),
-		selectedBoard: "allAssigned",
-		boards: [
-	        { id: "allAssigned", name: "All cards assigned to me", },
-	        { id: "allVisible", name: "All cards visible to me", },
-		    { id: "abc", name: "ABC", },
-		    { id: "def", name: "DEF", },
-		    { id: "geh", name: "GEH", },
-        ],
 	};
 
 	$scope.cardIsImportant = function(item) {
@@ -162,6 +163,7 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', fu
 		$scope.onDeauthorize();
 	});
 
+	/*
 	$("#urgent-important").droppable({
 		accept: ".card",
 		activeClass: "drop-active",
@@ -264,4 +266,5 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', fu
 		},
 		tolerance: 'pointer',
 	});
+	*/
 }]);
