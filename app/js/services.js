@@ -10,10 +10,21 @@ angular.module('myApp.services', [])
 
 		// Trello authorization service
 
+		// Workaround trello authorization issue by initially trying
+		// to authorize without interaction.
+		var preAuthorized = false;
+		Trello.authorize({
+			interactive: false,
+			success: function() {
+				preAuthorized = true;
+			},
+			scope: { write: true, read: true },
+		});
+
 		var service = {
 			user: {
 				name: '',
-				authorized: Trello.authorized,
+				authorized: preAuthorized,
 			},
 
 			onAuthorized: function() {
@@ -25,21 +36,34 @@ angular.module('myApp.services', [])
 			},
 		};
 
+		var workaroundApplyIssueFirstCall = true;
+
 		service.authorize = function() {
 		    Trello.authorize({
-		        type: "popup",
+		    	type: 'popup',
+		        name: 'First things first',
+		        scope: { write: true, read: true },
 		        success: function() {
-		        	$rootScope.$broadcast('authorized');
+		        	if (workaroundApplyIssueFirstCall) {
+		        		workaroundApplyIssueFirstCall = false;
+			        	$rootScope.$apply(function() {
+			        		service.user.authorized = true;
+		        			service.onAuthorized();
+			        	});
+		        	} else {
+		        		// Call without $apply() - still does not work sometimes apply would be needed
+		        		service.user.authorized = true;
+	        			service.onAuthorized();
+		        	}
 	        	},
 		    	error: function() { /* TODO */ },
-		        scope: { write: true, read: true },
-		        name: "First things first",
-		    })
+		    });
 		};
 
 		service.deauthorize = function() {
 			Trello.deauthorize();
-			$rootScope.$broadcast('deauthorized');
+			service.user.authorized = Trello.authorized();
+			service.onDeauthorized();
 		};
 
 		return service;

@@ -18,5 +18,13 @@ angular.module('myApp.controllers', [])
 		$scope.$on('deauthorized', function(e, args) {
 			$scope.authorized = false;
 		});
+
+		$scope.login = function() {
+			AuthService.authorize();
+		};
+
+		$scope.logout = function() {
+			AuthService.deauthorize();
+		};
 	}])
 ;
