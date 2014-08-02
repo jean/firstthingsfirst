@@ -16,20 +16,14 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.boards = [];
 	$scope.selectedBoard = null;
 
+	$scope.labelNames = ['green','yellow','orange','red','purple','blue'];
+	$scope.selectedLabel = "red";
+	$scope.selectedLabelClass = 'label-red';
+
+	$scope.selectedUrgentDate = Date.now(); //$filter("date")(Date.now(), 'yyyy-MM-dd'),
+
 	$scope.settings = {
-		labels: ['green','yellow','orange','red','purple','blue'],
-		selectedLabel: "red",
-		selectedLabelClass: 'label-red',
-		urgentDate: $filter("date")(Date.now(), 'yyyy-MM-dd'),
-		selectedBoard: "allAssigned",
-		boards: [
-	        { id: "allAssigned", name: "All cards assigned to me", },
-	        { id: "allVisible", name: "All cards visible to me", },
-		    { id: "abc", name: "ABC", },
-		    { id: "def", name: "DEF", },
-		    { id: "geh", name: "GEH", },
-        ],
-        dateFormat: 'yyyy-MMMM-dd',
+        dateFormat: 'yyyy-MM-dd',
         dateOptions: {
 			formatYear: 'yy',
 			startingDay: 1,
@@ -64,8 +58,13 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		};
 		Trello.get("members/me/boards", params, function(boards) {
 			$scope.$apply(function() {
-				$scope.boards = boards;
-
+            	$scope.boards = [];
+            	$scope.boards.push({
+            		name: 'Cards I\'m assigned to'
+            	});
+            	angular.forEach(boards, function(board) {
+                	$scope.boards.push(board);
+            	});
 				$log.info('Boards loaded');
 			});
 		});
@@ -75,14 +74,20 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	 * Load boards
 	 */
 	$scope.loadCards = function() {
-		$log.info('loadCards() ' + $scope.settings.urgentDate);
+		$log.info('loadCards() ' + $scope.selectedUrgentDate);
 
         // Output a list of all of the cards that the member
         // is assigned to
-        Trello.get("members/me/cards", function(cards) {
+        var params = {
+        	fields: 'name,labels,due',
+        };
+        Trello.get("members/me/cards", params, function(cards) {
         	$scope.$apply(function(){
             	$scope.cards = [];
             	angular.forEach(cards, function(card) {
+            		if (card.due) {
+            			card.due = new Date(card.due);
+            		}
                 	$scope.cards.push(card);
             	});
         		$log.info("Cards loaded.");
@@ -111,8 +116,8 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	}
 
 	$scope.selectLabel = function(label) {
-		$scope.settings.selectedLabel = label;
-		$scope.settings.selectedLabelClass = 'label-' + label;
+		$scope.selectedLabel = label;
+		$scope.selectedLabelClass = 'label-' + label;
 		$scope.dropdownLabelOpened = false;
 	};
 
@@ -125,12 +130,15 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 
 	$scope.cardIsImportant = function(item) {
 		return (item.labels.length > 0)
-			&& item.labels.some(function(i) { return i == $scope.settings.selectedLabel });
+			&& item.labels.some(function(i) {
+				return i.color == $scope.selectedLabel;
+			});
 	};
 
 	$scope.cardIsUrgent = function(item) {
+		//$log.info(item.name + ' due: ' + new Date(item.due));
 		return (item.due != null)
-			&& item.due > $scope.settings.urgentDate;
+			&& item.due < $scope.selectedUrgentDate;
 	};
 
 	$scope.urgentAndImportantFilter = function(item) {
@@ -174,26 +182,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 
 		$scope.cards.push(newCard);
 	};
-
-	/*
-	 * Application startup code / jQuery handling of elements
-	 * TODO: move somewhere else
-	 */
-
-	/*
-	 * commented out for offline development
-	 * TODO: modularize and make fault tolerant
-	Trello.authorize({
-	    interactive:false,
-	    success: $scope.onAuthorize,
-	    scope: { write: true, read: true }
-	});
-	*/
-
-	$("#trelloLogout").click(function() {
-		Trello.deauthorize();
-		$scope.onDeauthorize();
-	});
 
 	/*
 	$("#urgent-important").droppable({

@@ -270,6 +270,9 @@ div.quadrant {
   border-radius: 3px;
   height: 50%;
 }
+div.quadrant ul {
+  padding: 3px;
+}
 
 div.quadrant .list-header {
   -moz-box-flex: 0;
@@ -292,6 +295,106 @@ div.quadrant .list-header {
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
+}
+
+/*****************************************************************************
+ * Cards
+ */
+
+.list-cards {
+  -moz-box-flex: 1;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 4px 1px;
+  z-index: 1;
+}
+
+.list-card {
+  background-color: #fff;
+  border-left: 2px solid #fff;
+  border-right: 1px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  padding: 6px 8px 4px;
+  position: relative;
+  z-index: 0;
+
+  /* For dragging */
+  /*
+  min-width: 320px;
+  list-style: none;
+  */
+}
+
+.list-card-title {
+  display: inline-block;
+  text-decoration: none;
+  color: #333;
+  font-weight: 400;
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-decoration: none;
+  word-wrap: break-word;
+}
+
+.list-card-title:hover
+{
+  text-decoration: underline;
+}
+
+.list-card-due {
+  float: right;
+  font-size: 7pt;
+}
+
+/*
+ * Inline layout functionality similar to bootstrap .form-inline
+ * form-group (list-card)
+ *   > input-group (list-card-details)
+ *     > input-group-addon (list-card-checkbox)
+ *     > form-control (list-card-title)
+ */
+.list-card {
+  display: block;
+  vertical-align: middle;
+}
+.list-card-details {
+  position: relative;
+  display: inline-table;
+  border-collapse: separate;
+  vertical-align: middle;
+}
+.list-card-details .list-card-checkbox {
+  display: table-cell;
+  width: auto;
+  white-space: nowrap;
+  vertical-align: middle;
+  padding: 3px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
+  color: #555;
+  text-align: center;
+  /*background-color: #eee;*/
+  /*border: 1px solid #ccc;*/
+  border-radius: 4px;
+}
+.list-card-details .list-card-title {
+  display: table-cell;
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 100%;
+  margin-bottom: 0;
 }
 
 /* ==========================================================================

@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="col-md-8 col-md-offset-2">
 
-      <form class="form-inline" role="form" ng-submit="load()">
+      <form class="form-inline" role="form" ng-submit="loadCards()">
 
         <span class="dropdown" is-open="dropdownBoardOpened">
           <button type="button" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
@@ -14,11 +14,11 @@
         </span>
 
         <span class="dropdown" is-open="dropdownLabelOpened">
-          <button type="button" ng-class="settings.selectedLabelClass" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
-            Select important label <span class="caret"></span>
+          <button type="button" ng-class="selectedLabelClass" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
+            {{selectedLabel}} <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu">
-            <li role="presentation" ng-repeat="label in settings.labels" class="label-{{label}}"><a role="menuitem" tabindex="-1" href ng-click="selectLabel(label)">{{label}}</a></li>
+            <li role="presentation" ng-repeat="label in labelNames" class="label-{{label}}"><a role="menuitem" tabindex="-1" href ng-click="selectLabel(label)">{{label}}</a></li>
           </ul>
         </span>
 
@@ -26,11 +26,11 @@
         HTML5 input type date - too early
         <div class="form-group">
           <label class="sr-only" for="inputUrgentDate">Date</label>
-          <input type="date" ng-model="settings.urgentDate" class="form-control" id="inputUrgentDate" placeholder="Urgent date">
+          <input type="date" ng-model="selectedUrgentDate" class="form-control" id="inputUrgentDate" placeholder="Urgent date">
         </div>
         -->
         <span class="input-group">
-          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="settings.urgentDate" datepicker-options="settings.dateOptions" is-open="datepickerOpened" ng-required="true" close-text="Close" />
+          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="selectedUrgentDate" datepicker-options="settings.dateOptions" is-open="datepickerOpened" ng-required="true" close-text="Close" />
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="openDatepicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
@@ -47,45 +47,61 @@
 <div class="matrix">
   <div class="row">
     <div class="col-md-6">
-      <div class="quadrant bg-danger">
+      <div class="list quadrant bg-danger">
         <div class="list-header"><h2 class="list-header-name">Urgent &amp; important</h2></div>
-        <ul>
-          <li class="card" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'-due'">
-            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
-          </li>
-        </ul>
+        <div class="list-cards">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'-due'">
+            <div class="list-card-details">
+              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+            </div>
+            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="quadrant bg-info">
+      <div class="list quadrant bg-info">
         <div class="list-header"><h2 class="list-header-name">Important</h2></div>
-        <ul>
-          <li class="card" ng-repeat="card in cards | filter:importantFilter | orderBy:'-due'">
-            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
-          </li>
-        </ul>
+        <div class="list-cards">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:importantFilter | orderBy:'-due'">
+            <div class="list-card-details">
+              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+            </div>
+            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-6">
-      <div class="quadrant bg-warning">
+      <div class="list quadrant bg-warning">
         <div class="list-header"><h2 class="list-header-name">Urgent</h2></div>
-        <ul>
-          <li class="card" ng-repeat="card in cards | filter:urgentFilter | orderBy:'-due'">
-            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
-          </li>
-        </ul>
+        <div class="list-cards">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentFilter | orderBy:'-due'">
+            <div class="list-card-details">
+              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+            </div>
+            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="quadrant bg-success">
+      <div class="list quadrant bg-success">
         <div class="list-header"><h2 class="list-header-name">Not Urgent &amp; not important</h2></div>
-        <ul>
-          <li class="card" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'-due'">
-            <input type="checkbox" ng-model="card.done" /><a href="{{card.url}}">{{card.name}}</a><span class="due">{{card.due | date:'short'}}</span>
-          </li>
-        </ul>
+        <div class="list-cards">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'-due'">
+            <div class="list-card-details">
+              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+            </div>
+            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
