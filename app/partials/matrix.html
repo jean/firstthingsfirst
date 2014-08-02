@@ -47,29 +47,35 @@
 <div class="matrix">
   <div class="row">
     <div class="col-md-6">
-      <div class="list quadrant bg-danger">
+      <div class="list quadrant bg-danger" ng-drop="true" ng-drop-success="onDropUrgentAndImportantComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Urgent &amp; important</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'-due'" ng-drag="true" ng-drag-data="card">
             <div class="list-card-details">
-              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
-              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+              <div class="list-card-handle">
+                <span class="drag-handle"></span>
+                <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              </div>
+              <a class="list-card-title" href="{{card.url}}" ng-prevent-drag>{{card.name}}</a>
             </div>
-            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+            <span class="list-card-due" am-time-ago="card.due"></span>
           </div>
         </div>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="list quadrant bg-info">
+      <div class="list quadrant bg-info" ng-drop="true" ng-drop-success="onDropImportantComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Important</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:importantFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:importantFilter | orderBy:'-due'" ng-drag="true" ng-drag-data="card">
             <div class="list-card-details">
-              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
-              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+              <div class="list-card-handle">
+                <span class="drag-handle"></span>
+                <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              </div>
+              <a class="list-card-title" href="{{card.url}}" ng-prevent-drag>{{card.name}}</a>
             </div>
-            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+            <span class="list-card-due" am-time-ago="card.due"></span>
           </div>
         </div>
       </div>
@@ -77,29 +83,35 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <div class="list quadrant bg-warning">
+      <div class="list quadrant bg-warning" ng-drop="true" ng-drop-success="onDropUrgentComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Urgent</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentFilter | orderBy:'-due'" ng-drag="true" ng-drag-data="card">
             <div class="list-card-details">
-              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
-              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+              <div class="list-card-handle">
+                <span class="drag-handle"></span>
+                <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              </div>
+              <a class="list-card-title" href="{{card.url}}" ng-prevent-drag>{{card.name}}</a>
             </div>
-            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+            <span class="list-card-due" am-time-ago="card.due"></span>
           </div>
         </div>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="list quadrant bg-success">
+      <div class="list quadrant bg-success" ng-drop="true" ng-drop-success="onDropNotUrgentNorImportantComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Not Urgent &amp; not important</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'-due'" ng-drag="true" ng-drag-data="card">
             <div class="list-card-details">
-              <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
-              <a class="list-card-title" href="{{card.url}}">{{card.name}}</a>
+              <div class="list-card-handle">
+                <span class="drag-handle"></span>
+                <!-- <div class="btn-group list-card-checkbox" data-toggle="buttons"><label class="btn btn-primary"><input type="checkbox" ng-model="card.done" /></label></div> -->
+              </div>
+              <a class="list-card-title" href="{{card.url}}" ng-prevent-drag>{{card.name}}</a>
             </div>
-            <span class="list-card-due">{{card.due | date:settings.dateFormat}}</span>
+            <span class="list-card-due" am-time-ago="card.due"></span>
           </div>
         </div>
       </div>

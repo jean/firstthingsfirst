@@ -20,7 +20,7 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.selectedLabel = "red";
 	$scope.selectedLabelClass = 'label-red';
 
-	$scope.selectedUrgentDate = Date.now(); //$filter("date")(Date.now(), 'yyyy-MM-dd'),
+	$scope.selectedUrgentDate = moment().subtract('days', 7).toDate();
 
 	$scope.settings = {
         dateFormat: 'yyyy-MM-dd',
@@ -79,14 +79,15 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
         // Output a list of all of the cards that the member
         // is assigned to
         var params = {
-        	fields: 'name,labels,due',
+        	fields: 'name,labels,due,url',
         };
         Trello.get("members/me/cards", params, function(cards) {
         	$scope.$apply(function(){
             	$scope.cards = [];
             	angular.forEach(cards, function(card) {
             		if (card.due) {
-            			card.due = new Date(card.due);
+            			// local card date handled with momentjs
+            			card.due = moment(card.due);
             		}
                 	$scope.cards.push(card);
             	});
@@ -138,7 +139,7 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.cardIsUrgent = function(item) {
 		//$log.info(item.name + ' due: ' + new Date(item.due));
 		return (item.due != null)
-			&& item.due < $scope.selectedUrgentDate;
+			&& item.due.isBefore(moment($scope.selectedUrgentDate));
 	};
 
 	$scope.urgentAndImportantFilter = function(item) {
@@ -181,6 +182,28 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		};
 
 		$scope.cards.push(newCard);
+	};
+
+	$scope.onDropUrgentAndImportantComplete = function(data, evt) {
+		$log.info('drop success, data: ', data);
+
+		if (!$scope.cardIsUrgent(data)) {
+			data.due = moment($scope.selectedUrgentDate).subtract('days', 1);
+		}
+
+		if (!$scope.cardIsImportant(data)) {
+			data.labels.push({ color: $scope.selectedLabel, name: '', });
+		}
+	};
+
+	$scope.onDropImportantComplete = function(data, evt) {
+		$log.info('drop success, data: ', data);
+	};
+	$scope.onDropUrgentComplete = function(data, evt) {
+		$log.info('drop success, data: ', data);
+	};
+	$scope.onDropNotUrgentNorImportantComplete = function(data, evt) {
+		$log.info('drop success, data: ', data);
 	};
 
 	/*

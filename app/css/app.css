@@ -360,7 +360,7 @@ div.quadrant .list-header {
  * Inline layout functionality similar to bootstrap .form-inline
  * form-group (list-card)
  *   > input-group (list-card-details)
- *     > input-group-addon (list-card-checkbox)
+ *     > input-group-addon (list-card-handle)
  *     > form-control (list-card-title)
  */
 .list-card {
@@ -373,7 +373,7 @@ div.quadrant .list-header {
   border-collapse: separate;
   vertical-align: middle;
 }
-.list-card-details .list-card-checkbox {
+.list-card-details .list-card-handle {
   display: table-cell;
   width: auto;
   white-space: nowrap;
@@ -395,6 +395,14 @@ div.quadrant .list-header {
   float: left;
   width: 100%;
   margin-bottom: 0;
+}
+
+.list-card-details .list-card-handle .drag-handle {
+  display: block;
+  cursor: move;
+  background-image: url(../img/handle.png);
+  width: 16px;
+  height: 16px;
 }
 
 /* ==========================================================================

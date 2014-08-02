@@ -12,6 +12,9 @@
     "angular-mocks": "~1.2.x",
     "html5-boilerplate": "~4.3.0",
     "bootstrap": "*",
-    "angular-bootstrap": "*"
+    "angular-bootstrap": "*",
+    "ngDraggable": "git@github.com:fatlinesofcode/ngDraggable.git",
+    "moment": "~2.8.1",
+    "angular-moment": "~0.8.0"
   }
 }
