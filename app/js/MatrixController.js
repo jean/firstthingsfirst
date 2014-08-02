@@ -6,12 +6,15 @@
  */
 angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$log', '$filter', 'AuthService', function($scope, $log, $filter, AuthService) {
 
-	// Register this controller on AuthService.authorized
-	$scope.$on('authorized', function(e, args) {
-		// Start retrieving data
-	});
+	/* Setting default values */
+	$scope.datepickerOpened = false;
+	$scope.dropdownBoardOpened = false;
+	$scope.dropdownLabelOpened = false;
 
 	$scope.cards = [];
+
+	$scope.boards = [];
+	$scope.selectedBoard = null;
 
 	$scope.settings = {
 		labels: ['green','yellow','orange','red','purple','blue'],
@@ -26,53 +29,99 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		    { id: "def", name: "DEF", },
 		    { id: "geh", name: "GEH", },
         ],
+        dateFormat: 'yyyy-MMMM-dd',
+        dateOptions: {
+			formatYear: 'yy',
+			startingDay: 1,
+		},
 	};
 
-	$scope.load = function() {
-		$log.info('load() ' + $scope.settings.urgentDate);
+	/**
+	 * Initialize controller after loading
+	 */
+	$scope.init = function() {
+		/* Load data if user is already authorized */
+		if (AuthService.user.authorized) {
+			$scope.loadUserData();
+			$scope.loadCards();
+		}
+
+		// Register this controller on AuthService.authorized
+		$scope.$on('authorized', function(e, args) {
+			$scope.loadUserData();
+			$scope.loadCards();
+		});
 	};
+
+	/**
+	 * Load boards
+	 */
+	$scope.loadUserData = function() {
+		$log.info('loadUserData()');
+
+		var params = {
+			filter: 'open',
+		};
+		Trello.get("members/me/boards", params, function(boards) {
+			$scope.$apply(function() {
+				$scope.boards = boards;
+
+				$log.info('Boards loaded');
+			});
+		});
+	};
+
+	/**
+	 * Load boards
+	 */
+	$scope.loadCards = function() {
+		$log.info('loadCards() ' + $scope.settings.urgentDate);
+
+        // Output a list of all of the cards that the member
+        // is assigned to
+        Trello.get("members/me/cards", function(cards) {
+        	$scope.$apply(function(){
+            	$scope.cards = [];
+            	angular.forEach(cards, function(card) {
+                	$scope.cards.push(card);
+            	});
+        		$log.info("Cards loaded.");
+            });
+
+   //      	$("li.card").draggable({
+   //      		appendTo: 'body',
+   //      		containment: 'window',
+   //      		helper: 'clone',
+   //      		revert: true,
+   //      		stack: "li.card",
+   //      		start: function(){
+   //      			$(this).hide();
+   //      		},
+   //      		stop: function(){
+   //      			$(this).show();
+   //      		}
+			// });
+        });
+	};
+
+	$scope.selectBoard = function(board) {
+		$scope.selectedBoard = board;
+		$scope.dropdownBoardOpened = false;
+		$log.info('selectedBoard: ' + $scope.selectedBoard.name);
+	}
 
 	$scope.selectLabel = function(label) {
 		$scope.settings.selectedLabel = label;
 		$scope.settings.selectedLabelClass = 'label-' + label;
+		$scope.dropdownLabelOpened = false;
 	};
 
-	$scope.onAuthorize = function() {
-	    Trello.members.get("me", function(member) {
-	    	$scope.$apply(function() {
-	    		$scope.user.authenticated = true;
-	    		$scope.user.name = member.fullName;
+	$scope.openDatepicker = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
 
-	    		$scope.status.msg = "Loading cards...";
-	    	});
-
-	        // Output a list of all of the cards that the member
-	        // is assigned to
-	        Trello.get("members/me/cards", function(cards) {
-	        	$scope.$apply(function(){
-	            	$scope.cards = [];
-	            	angular.forEach(cards, function(card) {
-	                	$scope.cards.push(card);
-	            	});
-	        		$scope.status.msg = "Cards loaded.";
-	            });
-
-	        	$("li.card").draggable({
-	        		appendTo: 'body',
-	        		containment: 'window',
-	        		helper: 'clone',
-	        		revert: true,
-	        		stack: "li.card",
-	        		start: function(){
-	        			$(this).hide();
-	        		},
-	        		stop: function(){
-	        			$(this).show();
-	        		}
-				});
-	        });
-	    });
-	};
+		$scope.datepickerOpened = true;
+	}
 
 	$scope.cardIsImportant = function(item) {
 		return (item.labels.length > 0)
@@ -250,4 +299,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		tolerance: 'pointer',
 	});
 	*/
+
+	$scope.init();
 }]);

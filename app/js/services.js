@@ -66,6 +66,17 @@ angular.module('myApp.services', [])
 			service.onDeauthorized();
 		};
 
+		// TODO: Load user information
+	    // Trello.members.get("me", function(member) {
+	    // 	$scope.$apply(function() {
+	    // 		$scope.user.authenticated = true;
+	    // 		$scope.user.name = member.fullName;
+
+	    // 		$scope.status.msg = "Loading cards...";
+	    // 	});
+
+	    // });
+
 		return service;
 	}])
 ;

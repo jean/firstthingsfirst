@@ -7,8 +7,8 @@ angular.module('myApp', [
   'myApp.filters',
   'myApp.services',
   'myApp.directives',
-  'myApp.controllers'
-  //'ui.bootstrap'
+  'myApp.controllers',
+  'ui.bootstrap'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/matrix', {templateUrl: 'partials/matrix.html', controller: 'MatrixController'});
