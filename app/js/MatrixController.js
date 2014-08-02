@@ -4,28 +4,20 @@
  *
  *
  */
-angular.module('myApp.controllers').controller('MatrixController', ['$scope', 'AuthService', function($scope, AuthService) {
+angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$log', '$filter', 'AuthService', function($scope, $log, $filter, AuthService) {
 
 	// Register this controller on AuthService.authorized
 	$scope.$on('authorized', function(e, args) {
 		// Start retrieving data
 	});
 
-	$scope.user = {
-		name: '-',
-		authenticated: false,
-	};
-
-	$scope.status = {
-		msg: '',
-	}
-
 	$scope.cards = [];
 
 	$scope.settings = {
 		labels: ['green','yellow','orange','red','purple','blue'],
 		selectedLabel: "red",
-		urgentDate: new Date(),
+		selectedLabelClass: 'label-red',
+		urgentDate: $filter("date")(Date.now(), 'yyyy-MM-dd'),
 		selectedBoard: "allAssigned",
 		boards: [
 	        { id: "allAssigned", name: "All cards assigned to me", },
@@ -36,11 +28,14 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', 'A
         ],
 	};
 
-  	$scope.init = function() {
+	$scope.load = function() {
+		$log.info('load() ' + $scope.settings.urgentDate);
+	};
 
-  	}
-
-	var self = this;
+	$scope.selectLabel = function(label) {
+		$scope.settings.selectedLabel = label;
+		$scope.settings.selectedLabelClass = 'label-' + label;
+	};
 
 	$scope.onAuthorize = function() {
 	    Trello.members.get("me", function(member) {

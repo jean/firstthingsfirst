@@ -114,6 +114,10 @@ h1, h2, h3 {
   color: #b3d4fc;
 }
 
+/*For angular-ui*/
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+/*For angular cloak*/
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
@@ -143,7 +147,112 @@ body {
   padding-left: 15px;
 }
 
-.matrix-container {
+/*****************************************************************************
+ * Matrix form
+ */
+
+.matrix-form {
+  padding: 10px;
+  margin-bottom: 10px;
+  color: inherit;
+  /*background-color: #eee;*/
+  /* dark header shamelessly stolen from trello */
+  background: rgba(0,0,0,.1);
+  background: -webkit-linear-gradient(top,rgba(0,0,0,.1) 0,rgba(0,0,0,.15) 100%);
+  background: linear-gradient(to bottom,rgba(0,0,0,.1) 0,rgba(0,0,0,.15) 100%);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.matrix-form .container {
+  max-width: 100%;
+}
+@media screen and (min-width: 768px) {
+  .matrix-form {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .container .matrix-form {
+    padding-right: 60px;
+    padding-left: 60px;
+  }
+}
+
+.matrix-form .dropdown .btn,
+.matrix-form .dropdown .btn-default,
+.matrix-form .dropdown .btn:hover,
+.matrix-form .dropdown .btn-default:hover {
+  background-image: none;
+}
+
+.matrix-form .dropdown-menu li {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding: 5px;
+}
+
+.label-green,
+.label-green:hover,
+.dropdown-menu>li.label-green>a,
+.dropdown-menu>li.label-green>a:hover {
+  background-color: #34b27d;
+  color: #ffffff;
+  text-shadow: none;
+}
+.label-yellow,
+.label-yellow:hover,
+.dropdown-menu>li.label-yellow>a,
+.dropdown-menu>li.label-yellow>a:hover {
+  background-color: #dbdb57;
+  color: #666666;
+  text-shadow: none;
+}
+.label-orange,
+.label-orange:hover,
+.dropdown-menu>li.label-orange>a,
+.dropdown-menu>li.label-orange>a:hover {
+  background-color: #e09952;
+  color: #ffffff;
+  text-shadow: none;
+}
+.label-red,
+.label-red:hover,
+.dropdown-menu>li.label-red>a,
+.dropdown-menu>li.label-red>a:hover {
+  background-color: #cb4d4d;
+  color: #ffffff;
+  text-shadow: none;
+}
+.label-purple,
+.label-purple:hover,
+.dropdown-menu>li.label-purple>a,
+.dropdown-menu>li.label-purple>a:hover {
+  background-color: #93c;
+  color: #ffffff;
+  text-shadow: none;
+}
+.label-blue,
+.label-blue:hover,
+.dropdown-menu>li.label-blue>a,
+.dropdown-menu>li.label-blue>a:hover {
+  background-color: #4d77cb;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+.matrix-form .dropdown-menu>li>a:hover {
+  background-image: none;
+  text-decoration: underline;
+}
+
+.form-inline .dropdown {
+  display: inline-block;
+}
+
+/*****************************************************************************
+ * Matrix
+ */
+
+#matrix-container {
   position: relative;
   height: 100%;
 }
