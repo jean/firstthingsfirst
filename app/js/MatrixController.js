@@ -17,10 +17,10 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.selectedBoard = null;
 
 	$scope.labelNames = ['green','yellow','orange','red','purple','blue'];
-	$scope.selectedLabel = "red";
-	$scope.selectedLabelClass = 'label-red';
+	$scope.selectedLabelColor = "red";
+	$scope.selectedLabelColorClass = 'label-red';
 
-	$scope.selectedUrgentDate = moment().subtract('days', 7).toDate();
+	$scope.selectedUrgentDate = moment().toDate();
 
 	$scope.settings = {
         dateFormat: 'yyyy-MM-dd',
@@ -37,13 +37,16 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		/* Load data if user is already authorized */
 		if (AuthService.user.authorized) {
 			$scope.loadUserData();
-			$scope.loadCards();
 		}
 
 		// Register this controller on AuthService.authorized
 		$scope.$on('authorized', function(e, args) {
 			$scope.loadUserData();
-			$scope.loadCards();
+		});
+
+		$scope.$on('deauthorized', function(e, args) {
+			$scope.boards = [];
+			$scope.cards = [];
 		});
 	};
 
@@ -53,19 +56,35 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.loadUserData = function() {
 		$log.info('loadUserData()');
 
+		var allAssignedBoard = {
+    		name: 'Cards I\'m assigned to',
+    		cardsUrl: 'members/me/cards',
+    	};
+
+		var allVisibleBoard = {
+    		name: 'All cards I\'m allowed to see',
+    		cardsUrl: 'members/me/cards',
+    	};
+
 		var params = {
 			filter: 'open',
 		};
 		Trello.get("members/me/boards", params, function(boards) {
 			$scope.$apply(function() {
             	$scope.boards = [];
-            	$scope.boards.push({
-            		name: 'Cards I\'m assigned to'
-            	});
+            	$scope.boards.push(allAssignedBoard);
+            	//$scope.boards.push(allVisibleBoard);
             	angular.forEach(boards, function(board) {
+            		// Add url for board card retrieval
+            		board.cardsUrl = 'boards/'+board.id+'/cards';
                 	$scope.boards.push(board);
             	});
+
+            	$scope.selectedBoard = allAssignedBoard;
 				$log.info('Boards loaded');
+
+				// After loading boards, trigger loading cards
+				$scope.loadCards();
 			});
 		});
 	};
@@ -76,12 +95,17 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.loadCards = function() {
 		$log.info('loadCards() ' + $scope.selectedUrgentDate);
 
+		if (!$scope.selectedBoard) {
+			$log.warn('No board selected');
+			return;
+		}
+
         // Output a list of all of the cards that the member
         // is assigned to
         var params = {
         	fields: 'name,labels,due,url',
         };
-        Trello.get("members/me/cards", params, function(cards) {
+        Trello.get($scope.selectedBoard.cardsUrl, params, function(cards) {
         	$scope.$apply(function(){
             	$scope.cards = [];
             	angular.forEach(cards, function(card) {
@@ -93,20 +117,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
             	});
         		$log.info("Cards loaded.");
             });
-
-   //      	$("li.card").draggable({
-   //      		appendTo: 'body',
-   //      		containment: 'window',
-   //      		helper: 'clone',
-   //      		revert: true,
-   //      		stack: "li.card",
-   //      		start: function(){
-   //      			$(this).hide();
-   //      		},
-   //      		stop: function(){
-   //      			$(this).show();
-   //      		}
-			// });
         });
 	};
 
@@ -117,8 +127,8 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	}
 
 	$scope.selectLabel = function(label) {
-		$scope.selectedLabel = label;
-		$scope.selectedLabelClass = 'label-' + label;
+		$scope.selectedLabelColor = label;
+		$scope.selectedLabelColorClass = 'label-' + label;
 		$scope.dropdownLabelOpened = false;
 	};
 
@@ -132,14 +142,16 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.cardIsImportant = function(item) {
 		return (item.labels.length > 0)
 			&& item.labels.some(function(i) {
-				return i.color == $scope.selectedLabel;
+				return i.color == $scope.selectedLabelColor;
 			});
 	};
 
 	$scope.cardIsUrgent = function(item) {
-		//$log.info(item.name + ' due: ' + new Date(item.due));
-		return (item.due != null)
-			&& item.due.isBefore(moment($scope.selectedUrgentDate));
+		if (!item.due) {
+			return false;
+		}
+		var x = moment($scope.selectedUrgentDate);
+		return item.due.isBefore(x, 'day') || item.due.isSame(x, 'day');
 	};
 
 	$scope.urgentAndImportantFilter = function(item) {
@@ -184,132 +196,90 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		$scope.cards.push(newCard);
 	};
 
-	$scope.onDropUrgentAndImportantComplete = function(data, evt) {
-		$log.info('drop success, data: ', data);
+	/**
+	 * Write new value for the due date to trello
+	 */
+	$scope.updateCardUrgency = function(card, isUrgent) {
+		// Update card in trello
+		Trello.put(
+			"cards/" + card.id + "/due",
+			{ value: (isUrgent ? moment($scope.selectedUrgentDate).toJSON() : null) },
+			function(newCard) {
+				$scope.$apply(function() {
+					card.due = newCard.due ? moment(newCard.due) : null;
+				});
+			}
+		);
+	}
 
-		if (!$scope.cardIsUrgent(data)) {
-			data.due = moment($scope.selectedUrgentDate).subtract('days', 1);
+	/**
+	 * Write new value for labels to trello
+	 */
+	$scope.updateCardImportance = function(card, isImportant) {
+		// Update card in trello
+		var newLabels = [];
+		if (isImportant) {
+			// Add the label
+			newLabels.push($scope.selectedLabelColor);
+			angular.forEach(card.labels, function(label) {
+				newLabels.push(label.color);
+			});
+		} else {
+			// Remove the label
+			angular.forEach(card.labels, function(label) {
+				if (label.color != $scope.selectedLabelColor) {
+					newLabels.push(label);
+				}
+			});
 		}
 
-		if (!$scope.cardIsImportant(data)) {
-			data.labels.push({ color: $scope.selectedLabel, name: '', });
+		Trello.put(
+			"cards/" + card.id + "/labels",
+			{ value: newLabels.join() },
+			function(newCard) {
+				$scope.$apply(function() {
+					card.labels = newCard.labels;
+				});
+			}
+		);
+	}
+
+	$scope.onDropUrgentAndImportantComplete = function(card, evt) {
+		$log.info('drop success, card: ', card);
+		if (!$scope.cardIsUrgent(card)) {
+			$scope.updateCardUrgency(card, true);
+		}
+		if (!$scope.cardIsImportant(card)) {
+			$scope.updateCardImportance(card, true);
 		}
 	};
-
-	$scope.onDropImportantComplete = function(data, evt) {
-		$log.info('drop success, data: ', data);
+	$scope.onDropImportantComplete = function(card, evt) {
+		$log.info('drop success, card: ', card);
+		if ($scope.cardIsUrgent(card)) {
+			$scope.updateCardUrgency(card, false);
+		}
+		if (!$scope.cardIsImportant(card)) {
+			$scope.updateCardImportance(card, true);
+		}
 	};
-	$scope.onDropUrgentComplete = function(data, evt) {
-		$log.info('drop success, data: ', data);
+	$scope.onDropUrgentComplete = function(card, evt) {
+		$log.info('drop success, card: ', card);
+		if (!$scope.cardIsUrgent(card)) {
+			$scope.updateCardUrgency(card, true);
+		}
+		if ($scope.cardIsImportant(card)) {
+			$scope.updateCardImportance(card, false);
+		}
 	};
-	$scope.onDropNotUrgentNorImportantComplete = function(data, evt) {
-		$log.info('drop success, data: ', data);
+	$scope.onDropNotUrgentNorImportantComplete = function(card, evt) {
+		$log.info('drop success, card: ', card);
+		if ($scope.cardIsUrgent(card)) {
+			$scope.updateCardUrgency(card, false);
+		}
+		if ($scope.cardIsImportant(card)) {
+			$scope.updateCardImportance(card, false);
+		}
 	};
-
-	/*
-	$("#urgent-important").droppable({
-		accept: ".card",
-		activeClass: "drop-active",
-		hoverClass: "drop-hover",
-		drop: function(event, ui) {
-			var item = angular.element(ui.draggable.context).scope().item;
-			if (item) {
-				$scope.$apply(function() {
-					if (!self.cardIsUrgent(item)) {
-						item.due = new Date();
-					}
-
-					if (!self.cardIsImportant(item)) {
-						item.labels.push("red");
-					}
-				});
-
-	        	$("li.card").draggable({
-	        		containment: "document",
-	        		revert: true,
-	        		stack: "li.card",
-				});
-			}
-		},
-		tolerance: 'pointer',
-	});
-
-	$("#important").droppable({
-		accept: ".card",
-		activeClass: "drop-active",
-		hoverClass: "drop-hover",
-		drop: function(event, ui) {
-			var card = angular.element(ui.draggable.context).scope().card;
-			if (card) {
-				if (self.cardIsUrgent(card)) {
-					Trello.put(
-						"cards/" + card.id + "/due",
-						{ value: null, },
-						function(newCard) {
-							$scope.$apply(function() {
-								$scope.replaceCard(newCard);
-							});
-						}
-					);
-				}
-
-				if (!self.cardIsImportant(card)) {
-					// TODO add label
-				}
-			}
-		},
-		tolerance: 'pointer',
-	});
-
-	$("#urgent").droppable({
-		accept: ".card",
-		activeClass: "drop-active",
-		hoverClass: "drop-hover",
-		drop: function(event, ui) {
-			var card = angular.element(ui.draggable.context).scope().card;
-			if (card) {
-				if (!self.cardIsUrgent(card)) {
-					Trello.put(
-						"cards/" + card.id + "/due",
-						{ value: (new Date()).toJSON(), },
-						function(newCard) {
-							$scope.$apply(function() {
-								$scope.replaceCard(newCard);
-							});
-						}
-					);
-				}
-
-				if (self.cardIsImportant(card)) {
-					// TODO remove label (or ask user whether to remove the label)
-				}
-			}
-		},
-		tolerance: 'pointer',
-	});
-
-	$("#not-urgent-not-important").droppable({
-		accept: ".card",
-		activeClass: "drop-active",
-		hoverClass: "drop-hover",
-		drop: function(event, ui) {
-			var item = angular.element(ui.draggable.context).scope().item;
-			if (item) {
-				$scope.$apply(function() {
-					item.due = null;
-					item.labels = [];
-				});
-
-	        	$("li.card").draggable({
-	        		containment: "document",
-	        		revert: true,
-	        		stack: "li.card",
-				});
-			}
-		},
-		tolerance: 'pointer',
-	});
-	*/
 
 	$scope.init();
 }]);

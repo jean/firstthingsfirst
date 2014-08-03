@@ -138,11 +138,11 @@ body {
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 60px;
+  height: 50px;
   background-color: #f5f5f5;
 }
 .footer > .container {
-  margin: 20px;
+  margin: 15px;
   padding-right: 15px;
   padding-left: 15px;
 }
@@ -165,6 +165,10 @@ body {
 }
 .matrix-form .container {
   max-width: 100%;
+}
+.matrix-form label {
+  color: #fff;
+  margin-left: 10px;
 }
 @media screen and (min-width: 768px) {
   .matrix-form {
