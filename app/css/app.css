@@ -339,22 +339,6 @@ div.quadrant .list-header {
   */
 }
 
-.list-card-title {
-  display: inline-block;
-  text-decoration: none;
-  color: #333;
-  font-weight: 400;
-  margin: 0 0 4px 0;
-  overflow: hidden;
-  text-decoration: none;
-  word-wrap: break-word;
-}
-
-.list-card-title:hover
-{
-  text-decoration: underline;
-}
-
 .list-card-due {
   float: right;
   font-size: 7pt;
@@ -382,7 +366,7 @@ div.quadrant .list-header {
   width: auto;
   white-space: nowrap;
   vertical-align: middle;
-  padding: 3px;
+  padding: 0 10px 0 0;
   font-size: 14px;
   font-weight: normal;
   line-height: 1;
@@ -398,7 +382,24 @@ div.quadrant .list-header {
   z-index: 2;
   float: left;
   width: 100%;
-  margin-bottom: 0;
+  margin: 0;
+  margin-bottom: 5px;
+
+  text-decoration: none;
+  color: #333;
+  font-weight: 400;
+  overflow: hidden;
+  text-decoration: none;
+  word-wrap: break-word;
+}
+.list-card-title:hover
+{
+  text-decoration: underline;
+}
+
+.list-card-details .list-card-listname {
+  font-size: 0.8em;
+  color: #999;
 }
 
 .list-card-details .list-card-handle .drag-handle {

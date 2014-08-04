@@ -57,27 +57,37 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		$log.info('loadUserData()');
 
 		var allAssignedBoard = {
+			id: null,
     		name: 'Cards I\'m assigned to',
     		cardsUrl: 'members/me/cards',
     	};
 
 		var allVisibleBoard = {
+			id: null,
     		name: 'All cards I\'m allowed to see',
-    		cardsUrl: 'members/me/cards',
+    		cardsUrl: 'members/me/cards', // TODO, more complex option needed
     	};
 
 		var params = {
 			filter: 'open',
+			lists: 'all',
 		};
 		Trello.get("members/me/boards", params, function(boards) {
 			$scope.$apply(function() {
-            	$scope.boards = [];
-            	$scope.boards.push(allAssignedBoard);
+            	$scope.boards = {};
+            	$scope.boards[0] = allAssignedBoard;
             	//$scope.boards.push(allVisibleBoard);
             	angular.forEach(boards, function(board) {
             		// Add url for board card retrieval
             		board.cardsUrl = 'boards/'+board.id+'/cards';
-                	$scope.boards.push(board);
+
+            		// Use object instead of array for lists to simplify access
+            		board.indexedLists = {};
+            		angular.forEach(board.lists, function(list) {
+            			board.indexedLists[list.id] = list;
+            		});
+            		board.lists = null;
+                	$scope.boards[board.id] = board;
             	});
 
             	$scope.selectedBoard = allAssignedBoard;
@@ -103,7 +113,7 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
         // Output a list of all of the cards that the member
         // is assigned to
         var params = {
-        	fields: 'name,labels,due,url',
+        	fields: 'name,labels,due,url,idBoard,idList',
         };
         Trello.get($scope.selectedBoard.cardsUrl, params, function(cards) {
         	$scope.$apply(function(){
@@ -113,6 +123,7 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
             			// local card date handled with momentjs
             			card.due = moment(card.due);
             		}
+            		card.listname = '-'; // initialize with empty listname
                 	$scope.cards.push(card);
             	});
         		$log.info("Cards loaded.");
