@@ -67,7 +67,7 @@
       <div class="list quadrant bg-danger" ng-drop="true" ng-drop-success="onDropUrgentAndImportantComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Urgent &amp; important</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentAndImportantFilter | orderBy:'due'">
             <div class="list-card-details">
               <div class="list-card-handle">
                 <span class="drag-handle" ng-drag="true" ng-drag-data="card"></span>
@@ -88,7 +88,7 @@
       <div class="list quadrant bg-info" ng-drop="true" ng-drop-success="onDropImportantComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Important</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:importantFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:importantFilter | orderBy:'due'">
             <div class="list-card-details">
               <div class="list-card-handle">
                 <span class="drag-handle" ng-drag="true" ng-drag-data="card"></span>
@@ -111,7 +111,7 @@
       <div class="list quadrant bg-warning" ng-drop="true" ng-drop-success="onDropUrgentComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Urgent</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:urgentFilter | orderBy:'due'">
             <div class="list-card-details">
               <div class="list-card-handle">
                 <span class="drag-handle" ng-drag="true" ng-drag-data="card"></span>
@@ -132,7 +132,7 @@
       <div class="list quadrant bg-success" ng-drop="true" ng-drop-success="onDropNotUrgentNorImportantComplete($data,$event)">
         <div class="list-header"><h2 class="list-header-name">Not Urgent &amp; not important</h2></div>
         <div class="list-cards">
-          <div class="list-card clearfix" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'-due'">
+          <div class="list-card clearfix" ng-repeat="card in cards | filter:notUrgentNorImportantFilter | orderBy:'due'">
             <div class="list-card-details">
               <div class="list-card-handle">
                 <span class="drag-handle" ng-drag="true" ng-drag-data="card"></span>
