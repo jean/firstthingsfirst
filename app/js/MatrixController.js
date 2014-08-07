@@ -12,6 +12,7 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.dropdownLabelOpened = false;
 
 	$scope.cards = [];
+	$scope.selectedCard = null;
 
 	$scope.boards = [];
 	$scope.selectedBoard = null;
@@ -150,6 +151,39 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		$scope.datepickerOpened = true;
 	}
 
+	/**
+	 * Open card details modal to edit due date
+	 */
+	$scope.openCardDetails = function($event, card) {
+		$scope.selectedCard = card;
+		$scope.selectedCard.selectedDueDate = (card.due ? card.due.toDate() : null);
+		$('#trelloCardModal').modal();
+		$event.preventDefault();
+		$event.stopPropagation();
+	}
+
+	$scope.trelloCardModalSave = function() {
+		if ($scope.selectedCard) {
+			var card = $scope.selectedCard;
+
+			// Update card in trello
+			Trello.put(
+				"cards/" + card.id + "/due",
+				{ value: (card.selectedDueDate ? moment(card.selectedDueDate).toJSON() : null), },
+				function(newCard) {
+					$scope.$apply(function() {
+						card.due = newCard.due ? moment(newCard.due) : null;
+					});
+				}
+			);
+		}
+		$('#trelloCardModal').modal('hide');
+	}
+
+	$scope.trelloCardClearDueDate = function() {
+		$scope.selectedCard.selectedDueDate = null;
+	}
+
 	$scope.cardIsImportant = function(item) {
 		return (item.labels.length > 0)
 			&& item.labels.some(function(i) {
@@ -179,32 +213,6 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 
 	$scope.notUrgentNorImportantFilter = function(item) {
 		return !$scope.cardIsUrgent(item) && !$scope.cardIsImportant(item);
-	};
-
-	$scope.replaceCard = function(newCard) {
-		var oldCards = $scope.cards;
-		$scope.cards = [];
-		$scope.cards.push(newCard);
-		angular.forEach(oldCards, function(card) {
-			if (newCard.id != card.id) {
-				$scope.cards.push(card);
-			}
-		});
-	};
-
-	/**
-	 * add new card (from frontend).
-	 */
-	$scope.addCard = function() {
-		var newCard = {
-			name: "New card...",
-			done: false,
-			url: "http://trello.com/abcd",
-			due: new Date(),
-			labels: ["red"],
-		};
-
-		$scope.cards.push(newCard);
 	};
 
 	/**

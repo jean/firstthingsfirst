@@ -1,49 +1,59 @@
 <div class="matrix-form">
   <div class="container-fluid">
 
-    <div class="col-md-6">
-      <form class="form-inline pull-right" role="form">
-
-        <label>Cards urgent before:</label>
-        <!--
-        HTML5 input type date - too early
-        <div class="form-group">
-          <label class="sr-only" for="inputUrgentDate">Date</label>
-          <input type="date" ng-model="selectedUrgentDate" class="form-control" id="inputUrgentDate" placeholder="Urgent date">
-        </div>
-        -->
-        <span class="input-group">
-          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="selectedUrgentDate" datepicker-options="settings.dateOptions" is-open="datepickerOpened" ng-required="true" close-text="Close" />
-          <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="openDatepicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-          </span>
-        </span>
-        <label>Important label:</label>
-        <span class="dropdown" is-open="dropdownLabelOpened">
-          <button type="button" ng-class="selectedLabelColorClass" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
-            {{selectedLabelColor}} <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li role="presentation" ng-repeat="label in labelNames" class="label-{{label}}"><a role="menuitem" tabindex="-1" href ng-click="selectLabel(label)">{{label}}</a></li>
-          </ul>
-        </span>
-      </form>
+    <div class="row">
+      <div class="alert alert-warning fade in" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        Items can be dragged to other areas with the handle. Dragging an item to another area will update the selected important
+        label and the due date. In addition to that, the due date can be updated by clicking the calendar button on the card.
+      </div>
     </div>
 
-    <div class="col-md-6">
-      <form class="form-inline" role="form" ng-submit="loadCards()">
-        <span class="dropdown" is-open="dropdownBoardOpened">
-          <button type="button" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
-            {{(selectedBoard ? selectedBoard.name : 'Select board')}} <span class="caret"></span>
+    <div class="row">
+      <div class="col-md-6">
+        <form class="form-inline pull-right" role="form">
+
+          <label>Cards urgent before:</label>
+          <!--
+          HTML5 input type date - too early
+          <div class="form-group">
+            <label class="sr-only" for="inputUrgentDate">Date</label>
+            <input type="date" ng-model="selectedUrgentDate" class="form-control" id="inputUrgentDate" placeholder="Urgent date">
+          </div>
+          -->
+          <span class="input-group">
+            <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="selectedUrgentDate" datepicker-options="settings.dateOptions" is-open="datepickerOpened" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openDatepicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </span>
+          <label>Important label:</label>
+          <span class="dropdown" is-open="dropdownLabelOpened">
+            <button type="button" ng-class="selectedLabelColorClass" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
+              {{selectedLabelColor}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation" ng-repeat="label in labelNames" class="label-{{label}}"><a role="menuitem" tabindex="-1" href ng-click="selectLabel(label)">{{label}}</a></li>
+            </ul>
+          </span>
+        </form>
+      </div>
+
+      <div class="col-md-6">
+        <form class="form-inline" role="form" ng-submit="loadCards()">
+          <span class="dropdown" is-open="dropdownBoardOpened">
+            <button type="button" class="btn btn-default dropdown-toggle"> <!-- Bug: https://github.com/angular-ui/bootstrap/issues/2294 data-toggle="dropdown" -->
+              {{(selectedBoard ? selectedBoard.name : 'Select board')}} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation" ng-repeat="board in boards" ><a role="menuitem" tabindex="-1" href ng-click="selectBoard(board)">{{board.name}}</a></li>
+            </ul>
+          </span>
+          <button type="submit" class="btn btn-default">
+            <span class="glyphicon glyphicon-refresh"></span> Load
           </button>
-          <ul class="dropdown-menu" role="menu">
-            <li role="presentation" ng-repeat="board in boards" ><a role="menuitem" tabindex="-1" href ng-click="selectBoard(board)">{{board.name}}</a></li>
-          </ul>
-        </span>
-        <button type="submit" class="btn btn-default">
-          <span class="glyphicon glyphicon-refresh"></span> Load
-        </button>
-      </form>
+        </form>
+      </div>
     </div>
 
   </div>
@@ -66,7 +76,10 @@
               <a class="list-card-title" href="{{card.url}}" target="_blank" ng-prevent-drag>{{card.name}}</a>
               <div class="list-card-listname">in <strong>{{boards[card.idBoard].indexedLists[card.idList].name}}</strong> on <strong>{{boards[card.idBoard].name}}</strong></div>
             </div>
-            <span class="list-card-due" am-time-ago="card.due"></span>
+            <span class="list-card-due">
+              <span am-time-ago="card.due"></span>
+              <button type="button" class="btn btn-default btn-xs" ng-click="openCardDetails($event, card)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
           </div>
         </div>
       </div>
@@ -84,7 +97,10 @@
               <a class="list-card-title" href="{{card.url}}" target="_blank" ng-prevent-drag>{{card.name}}</a>
               <div class="list-card-listname">in <strong>{{boards[card.idBoard].indexedLists[card.idList].name}}</strong> on <strong>{{boards[card.idBoard].name}}</strong></div>
             </div>
-            <span class="list-card-due" am-time-ago="card.due"></span>
+            <span class="list-card-due">
+              <span am-time-ago="card.due"></span>
+              <button type="button" class="btn btn-default btn-xs" ng-click="openCardDetails($event, card)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
           </div>
         </div>
       </div>
@@ -104,7 +120,10 @@
               <a class="list-card-title" href="{{card.url}}" target="_blank" ng-prevent-drag>{{card.name}}</a>
               <div class="list-card-listname">in <strong>{{boards[card.idBoard].indexedLists[card.idList].name}}</strong> on <strong>{{boards[card.idBoard].name}}</strong></div>
             </div>
-            <span class="list-card-due" am-time-ago="card.due"></span>
+            <span class="list-card-due">
+              <span am-time-ago="card.due"></span>
+              <button type="button" class="btn btn-default btn-xs" ng-click="openCardDetails($event, card)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
           </div>
         </div>
       </div>
@@ -122,9 +141,45 @@
               <a class="list-card-title" href="{{card.url}}" target="_blank" ng-prevent-drag>{{card.name}}</a>
               <div class="list-card-listname">in <strong>{{boards[card.idBoard].indexedLists[card.idList].name}}</strong> on <strong>{{boards[card.idBoard].name}}</strong></div>
             </div>
-            <span class="list-card-due" am-time-ago="card.due"></span>
+            <span class="list-card-due">
+              <span am-time-ago="card.due"></span>
+              <button type="button" class="btn btn-default btn-xs" ng-click="openCardDetails($event, card)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="trelloCardModal" tabindex="-1" role="dialog" aria-labelledby="Trello card" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">{{selectedCard.name}}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Due date</label>
+            <div class="col-sm-10">
+              <div style="display:inline-block; min-height:270px;">
+                <datepicker ng-model="selectedCard.selectedDueDate" show-weeks="true" class="well well-sm"></datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-10">
+              <button type="button" class="btn btn-default btn-danger button-sm" ng-click="trelloCardClearDueDate()">Clear due date</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="trelloCardModalSave()">Save changes</button>
       </div>
     </div>
   </div>
