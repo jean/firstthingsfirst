@@ -1,6 +1,5 @@
 'use strict';
 
-
 // Declare app level module which depends on filters, and services
 angular.module('myApp', [
   'ngRoute',
@@ -10,13 +9,26 @@ angular.module('myApp', [
   'myApp.controllers',
   'ui.bootstrap',
   'angularMoment',
-  'ngDraggable'
+  'ngDraggable',
+  'angulartics',
+  'angulartics.google.analytics'
 ])
+/**
+ * Route configuration
+ */
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/matrix', {templateUrl: 'partials/matrix.html', controller: 'MatrixController'});
   $routeProvider.when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'});
   $routeProvider.otherwise({redirectTo: '/matrix'});
 }])
+/**
+ * Default configuration, overwritten in optional configuration file config.js (excluded from version control)
+ */
+.constant('appConfiguration', {
+  tracking: false,
+  gaTrackingId: null,
+  trelloApiKey: null,
+})
 // .constant('angularMomentConfig', {
 //     preprocess: 'unix', // optional
 //     timezone: 'Europe/London' // optional

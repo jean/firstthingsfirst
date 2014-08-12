@@ -6,9 +6,13 @@ tmp
 *.sublime-workspace
 .bower.json
 
+/app/js/config.js
+
 /bower_components/
 /node_modules/
 
+/app/bower_components/angulartics/*
+!/app/bower_components/angulartics/dist
 /app/bower_components/bootstrap/*
 !/app/bower_components/bootstrap/dist
 /app/bower_components/jquery/*
