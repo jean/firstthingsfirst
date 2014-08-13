@@ -1,10 +1,7 @@
-/*
- * TODO:
- * Sort items: http://jsfiddle.net/xnnjQ/6/
- *
- *
+/**
+ * Matrix controller containing most of the action.
  */
-angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$log', '$filter', 'AuthService', function($scope, $log, $filter, AuthService) {
+angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$log', '$filter', 'AuthService', '$analytics', function($scope, $log, $filter, AuthService, $analytics) {
 
 	/* Setting default values */
 	$scope.datepickerOpened = false;
@@ -48,6 +45,26 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		$scope.$on('deauthorized', function(e, args) {
 			$scope.boards = [];
 			$scope.cards = [];
+		});
+
+		$scope.$watch('selectedLabelColor', function(newVal, oldVal) {
+			if (newVal !== oldVal) {
+				$analytics.eventTrack('importantLabelUpdated', {
+					category: 'trello',
+					label: newVal,
+					value: 1,
+				});
+			}
+		});
+
+		$scope.$watch('selectedUrgentDate', function(newVal, oldVal) {
+			if (newVal !== oldVal) {
+				$analytics.eventTrack('urgentDateUpdated', {
+					category: 'trello',
+					label: 'offset',
+					value: moment(newVal).diff(moment(), 'days'),
+				});
+			}
 		});
 	};
 
@@ -110,6 +127,12 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 			$log.warn('No board selected');
 			return;
 		}
+
+		$analytics.eventTrack('loadCards', {
+			category: 'trello',
+			label: ($scope.selectedBoard.id ? 'userboard' : 'assignedCards'),
+			value: 1,
+		});
 
         // Output a list of all of the cards that the member
         // is assigned to
