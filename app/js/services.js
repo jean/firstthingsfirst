@@ -4,7 +4,7 @@
 
 angular.module('myApp.services', [])
 	// Simple value service from example
-	.value('version', '0.1')
+	.value('version', '0.2')
 	// AuthService
 	.factory('AuthService', ['$rootScope', function($rootScope) {
 

@@ -10,10 +10,10 @@
       <h1>First things first</h1>
       <p>
         This service is meant to help organize priorities. If you're already working with
-        <a href="https://trello.com/" target="_blank">Trello</a> you'll find your existing
-        cards ordered by their due date and important cards first.
+        <a href="https://trello.com/" target="_blank">Trello</a>, you'll find your existing
+        cards ordered by their due date with important cards listed first.
         If you're not yet using <a href="https://trello.com/" target="_blank">Trello</a>,
-        you should try to.
+        you should give it a try.
       </p>
     </div>
   </div>
@@ -25,10 +25,52 @@
     <div class="col-md-12 panel panel-default">
       <div class="row">
         <div class="col-md-6">
-          <h3>&quot;Eisenhower-Matrix&quot; View</h3>
-          <p>...</p>
+          <h3>&quot;Eisenhower-Matrix&quot;</h3>
+          <p>
+            The Eisenhower matrix is a time management principle to prioritize and plan
+            tasks especially in situations when there's just too much to do. Another use-case of this matrix
+            is to prioritize long-term goals for oneself.
+          </p>
+          <p>
+            <strong>Important and urgent</strong> tasks should be done by yourself immediately or as soon as possible.
+            Enough time of each day should be reserved for these kind of tasks. However, the ultimate goal would
+            be to avoid tasks becoming urgent and keeping this quadrant empty - this will allow you working on the
+            important tasks.
+          </p>
+          <p>
+            <strong>Important</strong> tasks should be scheduled ahead of time or be done whenever time allows it.
+          </p>
+          <p>
+            <strong>Urgent</strong> but less important tasks might be delegated or resolved without spending too much time on them.
+          </p>
+          <p>
+            Tasks that you would consider neighter important nor urgent might be things that you should simply not
+            do or schedule for doing later.
+          </p>
+          <p>
+            With <em>First things first</em> scheduled tasks will automatically switch into the urgent lane once
+            they become urgent.
+          </p>
         </div>
         <div class="col-md-6">
+          <h3>How to use</h3>
+          <p>
+            <strong>Drag &amp; drop to schedule:</strong> <em>First things first</em> allows you to drag and drop
+            tasks between the four quadrants to <em>triage</em> the tasks urgency and importance without spending
+            too much time on planning.
+          </p>
+          <p>
+            <strong>Board selection:</strong> With &quot;Cards I'm assigned to&quot; all cards you're a member of
+            will be displayed. (Pro tip: In Trello hover over a card and press the space-bar to assign
+            a card to yourself, no mouse-click required.)
+            If a specific board is being selected from the dropdown menu, all cards of the selected board will be
+            displayed.
+          </p>
+          <p>
+            <strong>Urgency and importance</strong> can be updated by setting the due date and the label of cards.
+            By default, the current day and the red label will be used to determine importance and urgency, both
+            of which can be defined in the menu on top of the matrix.
+          </p>
           <h3>Secure</h3>
           <p>
             Your Trello data will only be transmitted via HTTPS between your browser and the Trello servers
@@ -53,8 +95,8 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="panel panel-default" ng-hide="userAuthorized">
+  <div class="row" ng-hide="userAuthorized">
+    <div class="panel panel-default">
       <div class="panel-body">
         <div class="alert alert-info fade in" role="alert" style="margin-bottom:0;">
           <p>
@@ -68,6 +110,23 @@
           <button class="btn btn-success matrix-sign-in" ng-click="login()">Sign in with Trello</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 panel panel-default">
+      <h3>Ideas? Want to help?</h3>
+      <p>
+        Please visit the development board at <a href="https://trello.com/b/xiUsbwKO">https://trello.com/b/xiUsbwKO</a>
+        to vote and comment on the current development.
+      </p>
+      <h3>Resources</h3>
+      <p>
+        <ul>
+          <li>Eisenhower methology explanation video: <a href="http://www.eisenhower.me/about#methodology">http://www.eisenhower.me/about#methodology</a></li>
+          <li>(German video): <a href="http://www.flowfinder.de/eisenhower-prinzip/">http://www.flowfinder.de/eisenhower-prinzip/</a></li>
+        </ul>
+      </p>
     </div>
   </div>
 
