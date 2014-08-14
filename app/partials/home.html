@@ -1,0 +1,74 @@
+
+<div class="jumbotron home">
+  <div class="row">
+    <div class="thumbnail col-md-4 col-sm-4 pull-right" style="padding: 15px;">
+      <a href="https://trello.com/" target="_blank">
+        <img src="img/Trello-Logo.png" alt="Trello" />
+      </a>
+    </div>
+    <div class="col-md-8 col-sm-8">
+      <h1>First things first</h1>
+      <p>
+        This service is meant to help organize priorities. If you're already working with
+        <a href="https://trello.com/" target="_blank">Trello</a> you'll find your existing
+        cards ordered by their due date and important cards first.
+        If you're not yet using <a href="https://trello.com/" target="_blank">Trello</a>,
+        you should try to.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-12 panel panel-default">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>&quot;Eisenhower-Matrix&quot; View</h3>
+          <p>...</p>
+        </div>
+        <div class="col-md-6">
+          <h3>Secure</h3>
+          <p>
+            Your Trello data will only be transmitted via HTTPS between your browser and the Trello servers
+            and no data will be stored outside of the Trello system.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="thumbnail">
+            <img src="img/matrix-screen.png" alt="matrix">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="thumbnail">
+            <img src="img/security.jpg" alt="security">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="panel panel-default" ng-hide="userAuthorized">
+      <div class="panel-body">
+        <div class="alert alert-info fade in" role="alert" style="margin-bottom:0;">
+          <p>
+            Please sign in with your Trello account first. After signing in, cards you're assigned to will be loaded
+            into the matrix, or you can select specific boards from the list to load all cards from.
+          </p>
+          <p>
+            Your data will not be stored anywhere else and the only data being modified by this service is the due date
+            and one label used to mark a card as being important.
+          </p>
+          <button class="btn btn-success matrix-sign-in" ng-click="login()">Sign in with Trello</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

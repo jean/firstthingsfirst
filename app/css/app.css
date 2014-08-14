@@ -122,8 +122,9 @@ h1, h2, h3 {
   display: none !important;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/*****************************************************************************
+ * Sticky footer
+ */
 html {
   position: relative;
   min-height: 100%;
@@ -145,6 +146,25 @@ body {
   margin: 15px;
   padding-right: 15px;
   padding-left: 15px;
+}
+
+/*****************************************************************************
+ * Misc
+ */
+
+.jumbotron {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.jumbotron h1, .jumbotron .h1 {
+  font-size: 50px;
+}
+
+.jumbotron.home p {
+  text-align: justify;
+}
+.jumbotron.home .thumbnail {
+  margin-top: 20px;
 }
 
 /*****************************************************************************
@@ -255,6 +275,13 @@ body {
 /*****************************************************************************
  * Matrix
  */
+
+button.matrix-sign-in {
+  display: flex;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 #matrix-container {
   position: relative;

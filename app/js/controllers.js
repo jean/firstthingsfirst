@@ -3,28 +3,61 @@
 /* Controllers */
 
 angular.module('myApp.controllers', [])
-	.controller('AboutController', ['$scope', function($scope) {
+.controller('HomeController', ['$scope', 'AuthService', function($scope, AuthService) {
 
-	}])
-	.controller('NavbarController', ['$scope', 'AuthService', function($scope, AuthService) {
+	$scope.userAuthorized = false;
 
-		// Initialize with current status
-		$scope.authorized = AuthService.user.authorized;
+	/**
+	 * Initialize controller after loading
+	 */
+	$scope.init = function() {
+		/* Load data if user is already authorized */
+		if (AuthService.user.authorized) {
+			$scope.userAuthorized = true;
+		}
 
+		// Register this controller on AuthService.authorized
 		$scope.$on('authorized', function(e, args) {
-			$scope.authorized = true;
+			$scope.userAuthorized = true;
 		});
 
 		$scope.$on('deauthorized', function(e, args) {
-			$scope.authorized = false;
+			$scope.userAuthorized = false;
 		});
+	};
 
-		$scope.login = function() {
-			AuthService.authorize();
-		};
+	/**
+	 * Additional login action
+	 */
+	$scope.login = function() {
+		AuthService.authorize();
+	};
 
-		$scope.logout = function() {
-			AuthService.deauthorize();
-		};
-	}])
+	$scope.init();
+
+}])
+.controller('AboutController', ['$scope', function($scope) {
+
+}])
+.controller('NavbarController', ['$scope', 'AuthService', function($scope, AuthService) {
+
+	// Initialize with current status
+	$scope.authorized = AuthService.user.authorized;
+
+	$scope.$on('authorized', function(e, args) {
+		$scope.authorized = true;
+	});
+
+	$scope.$on('deauthorized', function(e, args) {
+		$scope.authorized = false;
+	});
+
+	$scope.login = function() {
+		AuthService.authorize();
+	};
+
+	$scope.logout = function() {
+		AuthService.deauthorize();
+	};
+}])
 ;

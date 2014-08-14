@@ -3,6 +3,8 @@
  */
 angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$log', '$filter', 'AuthService', '$analytics', function($scope, $log, $filter, AuthService, $analytics) {
 
+	$scope.userAuthorized = false;
+
 	/* Setting default values */
 	$scope.datepickerOpened = false;
 	$scope.dropdownBoardOpened = false;
@@ -34,15 +36,18 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 	$scope.init = function() {
 		/* Load data if user is already authorized */
 		if (AuthService.user.authorized) {
+			$scope.userAuthorized = true;
 			$scope.loadUserData();
 		}
 
 		// Register this controller on AuthService.authorized
 		$scope.$on('authorized', function(e, args) {
+			$scope.userAuthorized = true;
 			$scope.loadUserData();
 		});
 
 		$scope.$on('deauthorized', function(e, args) {
+			$scope.userAuthorized = false;
 			$scope.boards = [];
 			$scope.cards = [];
 		});
@@ -66,6 +71,13 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 				});
 			}
 		});
+	};
+
+	/**
+	 * Additional login action
+	 */
+	$scope.login = function() {
+		AuthService.authorize();
 	};
 
 	/**

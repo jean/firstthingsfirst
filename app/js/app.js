@@ -17,9 +17,11 @@ angular.module('myApp', [
  * Route configuration
  */
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/matrix', {templateUrl: 'partials/matrix.html', controller: 'MatrixController'});
-  $routeProvider.when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'});
-  $routeProvider.otherwise({redirectTo: '/matrix'});
+  $routeProvider
+  .when('/home', {templateUrl: 'partials/home.html', controller: 'HomeController'})
+  .when('/matrix', {templateUrl: 'partials/matrix.html', controller: 'MatrixController'})
+  .when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'})
+  .otherwise({redirectTo: '/matrix'});
 }])
 /**
  * Default configuration, overwritten in optional configuration file config.js (excluded from version control)
