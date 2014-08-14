@@ -39,7 +39,7 @@ angular.module('myApp.controllers', [])
 .controller('AboutController', ['$scope', function($scope) {
 
 }])
-.controller('NavbarController', ['$scope', 'AuthService', function($scope, AuthService) {
+.controller('NavbarController', ['$scope', '$location', 'AuthService', function($scope, $location, AuthService) {
 
 	// Initialize with current status
 	$scope.authorized = AuthService.user.authorized;
@@ -51,6 +51,13 @@ angular.module('myApp.controllers', [])
 	$scope.$on('deauthorized', function(e, args) {
 		$scope.authorized = false;
 	});
+
+	/**
+	 * Determine active menu entry
+	 */
+	$scope.isActive = function(route) {
+		return route === $location.path();
+	}
 
 	$scope.login = function() {
 		AuthService.authorize();
