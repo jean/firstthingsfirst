@@ -21,7 +21,7 @@ angular.module('myApp', [
   .when('/home', {templateUrl: 'partials/home.html', controller: 'HomeController'})
   .when('/matrix', {templateUrl: 'partials/matrix.html', controller: 'MatrixController'})
   .when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'})
-  .otherwise({redirectTo: '/matrix'});
+  .otherwise({redirectTo: '/home'});
 }])
 /**
  * Default configuration, overwritten in optional configuration file config.js (excluded from version control)
