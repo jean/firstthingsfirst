@@ -155,6 +155,12 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
         	$scope.$apply(function(){
             	$scope.cards = [];
             	angular.forEach(cards, function(card) {
+            		// Exclude done cards
+            		if ($scope.cardIsDone(card)) {
+            			$log.info('Excluding done card: ' + card.name);
+            			return;
+            		}
+
             		if (card.due) {
             			// local card date handled with momentjs
             			card.due = moment(card.due);
@@ -217,6 +223,17 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 
 	$scope.trelloCardClearDueDate = function() {
 		$scope.selectedCard.selectedDueDate = null;
+	}
+
+	/**
+	 * cardIsDone checks if a card is part of a board with the name "done"
+	 * TODO: add option for label
+	 * TODO: add option to include/exclude done cards from matrix
+	 */
+	$scope.cardIsDone = function(card) {
+		var b = $scope.boards[card.idBoard];
+		var c = b && b.indexedLists[card.idList];
+		return c && c.name.toLowerCase()==="done";
 	}
 
 	$scope.cardIsImportant = function(item) {
