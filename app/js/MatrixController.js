@@ -267,6 +267,13 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		return !$scope.cardIsUrgent(item) && !$scope.cardIsImportant(item);
 	};
 
+	// 10 years ahead should be after any other due date.
+	var theFuture = moment().add(10, 'y');
+	$scope.dateOrderValue = function(card) {
+		// Cards with due dates should appear before cards without any due date.
+		return card.due || theFuture;
+	};
+
 	/**
 	 * Write new value for the due date to trello
 	 */
