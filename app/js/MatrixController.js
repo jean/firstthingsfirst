@@ -225,6 +225,10 @@ angular.module('myApp.controllers').controller('MatrixController', ['$scope', '$
 		$scope.selectedCard.selectedDueDate = null;
 	}
 
+	$scope.trelloCardSelectTodayDueDate = function() {
+		$scope.selectedCard.selectedDueDate = new Date();
+	};
+
 	/**
 	 * cardIsDone checks if a card is part of a board with the name "done"
 	 * TODO: add option for label
